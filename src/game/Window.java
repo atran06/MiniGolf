@@ -5,6 +5,7 @@ public class Window {
 
 	public Window(int width, int height, String title) {
 		JFrame frame = new JFrame();
+		Game game = new Game();
 		
 		frame.setVisible(true);
 		frame.setSize(width, height);
@@ -13,5 +14,6 @@ public class Window {
 		frame.setResizable(false);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
+		frame.add(game);
 	}
 }
