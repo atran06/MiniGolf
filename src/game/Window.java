@@ -3,9 +3,8 @@ import javax.swing.JFrame;
 
 public class Window {
 
-	public Window(int width, int height, String title) {
+	public Window(int width, int height, String title, Game game) {
 		JFrame frame = new JFrame();
-		Game game = new Game();
 		
 		frame.setVisible(true);
 		frame.setSize(width, height);

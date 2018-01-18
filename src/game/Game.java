@@ -1,16 +1,22 @@
 package game;
 
 import java.awt.Canvas;
+import java.awt.Color;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferStrategy;
 
 public class Game extends Canvas implements Runnable {
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	private boolean isRunning;
 	private Thread thread;
+	private double x = 0, y = 0, velX, velY;
 
 	public Game() {
+		Window win = new Window(1280, 720, "Mini Golf", this);
 		isRunning = true;
 		thread = new Thread(this);
 		thread.start();
@@ -18,47 +24,62 @@ public class Game extends Canvas implements Runnable {
 
 	public void run() {
 		/////// Game Loop ////////
-		long lastTime = System.nanoTime();
-		double amountOfTicks = 60.0;
-		double ns = 1000000000 / amountOfTicks;
+		long beforeTime = System.nanoTime();
+		double ticks = 60.0;
+		double optimal = 1000000000 / ticks;
+		double lastFPSTime = 0;
+		long fps = 0;
 		double delta = 0;
-		long timer = System.currentTimeMillis();
-		int updates = 0;
-		int frames = 0;
 		
-		while (isRunning) {
-			long now = System.nanoTime();
-			delta += (now - lastTime) / ns;
-			lastTime = now;
-			while (delta >= 1) {
+		while(isRunning) {
+			long currentTime = System.nanoTime();
+			delta += (currentTime - beforeTime) / optimal;
+			long updateLength = currentTime - beforeTime;
+			beforeTime = currentTime;
+			
+			while(delta >= 1) {
 				tick();
-				updates++;
 				delta--;
 			}
-			render();
-			frames++;
-
-			if (System.currentTimeMillis() - timer > 1000) {
-				timer += 1000;
-				System.out.println("FPS: " + frames + " TICKS: " + updates);
-				frames = 0;
-				updates = 0;
+			
+			lastFPSTime += updateLength;
+			fps++;
+			
+			/////Updates the FPS/////
+			if(lastFPSTime >= 1000000000) {
+				System.out.println("FPS: " + fps);
+				fps = 0;
+				lastFPSTime = 0;
 			}
+			
+			render();
 		}
 	}
-
 	public void render() {
-		BufferStrategy bs = this.getBufferStrategy();
-		if(bs == null) {
+		BufferStrategy strat = this.getBufferStrategy();
+		if (strat == null) {
 			this.createBufferStrategy(3);
 			return;
 		}
+		Graphics g = strat.getDrawGraphics();
+		Graphics2D g2 = (Graphics2D) g;
 		///////// Draw///////////
-
+		g.setColor(Color.gray);
+		g.fillRect(0, 0, 1280, 720);
+		
+		g.setColor(Color.white);
+		g2.fill(new Rectangle2D.Double(x, y, 20, 20));
 		///////////////////////
+		
+		g.dispose();
+		strat.show();
 	}
 
 	public void tick() {
-
+		velX = 2;
+		velY = 2;
+		
+		x += velX;
+		y += velY;
 	}
 }
