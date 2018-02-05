@@ -6,10 +6,12 @@ import java.awt.Rectangle;
 public abstract class GameObject {
 
 	protected int x, y, velX, velY;
+	protected ID id;
 	
-	public GameObject(int x, int y) {
+	public GameObject(int x, int y, ID id) {
 		this.x = x;
 		this.y = y;
+		this.id = id;
 	}
 	public abstract void paintComponent(Graphics2D g2);
 	public abstract void tick();
